@@ -32,9 +32,4 @@ RUN composer require --dev symfony/phpunit-bridge
 
 RUN composer require symfony/webpack-encore-pack
 
-RUN yarn add @babel/preset-react --dev
-RUN yarn add react react-dom prop-types react-router-dom reactstrap axios
-RUN yarn add @babel/plugin-proposal-class-properties @babel/plugin-transform-runtime
-RUN yarn add react-csv-reader
-
 RUN yarn install
