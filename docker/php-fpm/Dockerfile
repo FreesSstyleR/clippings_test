@@ -9,7 +9,12 @@ RUN apt-get install -y zlib1g-dev wget libpq-dev git libicu-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_pgsql pgsql \
     && docker-php-ext-install zip xml
 
-RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+RUN chmod +x /usr/local/bin/composer
+RUN ln -snf /usr/share/zoneinfo/Europe/Sofia /etc/localtime
 
 RUN wget https://get.symfony.com/cli/installer -O - | bash
 
@@ -32,4 +37,3 @@ RUN composer require --dev symfony/phpunit-bridge
 
 RUN composer require symfony/webpack-encore-pack
 
-RUN yarn install
