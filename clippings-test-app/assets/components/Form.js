@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import CSVReader from "react-csv-reader";
 import Input from './Inputs/Input';
 import Select from './Inputs/Select';
 import SumData from './SumData';
+import axios from 'axios';
 
 const OUTPUT_CURRENCIES = [
     'USD',
@@ -17,14 +18,15 @@ const parseOptions = {
     transformHeader: function transformHeader(header) {
         return header.toLowerCase().replace(/\W/g, '_');
     },
-    error: function error(_error, fileInfo) {
-        alert(_error);
+    error: function error(error, fileInfo) {
+        alert(error);
     }
 };
 
 class Form extends Component {
 
     constructor(props) {
+        super(props);
         this.state = {
             data: [],
             currencies: {
@@ -79,24 +81,22 @@ class Form extends Component {
         this.setState({ data: data });
     };
 
-    setCurrency(value) {
-        return function (event) {
-            var currencies = this.state.currencies;
-            currencies[value] = event.target.value;
+    setCurrency = value => (event) => {
 
-            this.setState({
-                currencies: currencies
-            });
-        };
+        let currencies = this.state.currencies;
+        currencies[value] = event.target.value;
 
-
-
+        this.setState({
+            currencies: currencies
+        });
     }
+
     setCustomer(event) {
         this.setState({
             filter_customer: event.target.value
         });
     }
+
     setOutputCurrency(event) {
         this.setState({
             output_currency: event.target.value
@@ -111,12 +111,8 @@ class Form extends Component {
         }
 
         var def_currencies = 0;
-        Object.entries(formData.currencies).map(function (_ref) {
-            // TODO
-            var _ref2 = (_ref, 2),
-                key = _ref2[0],
-                value = _ref2[1];
-
+        Object.entries(formData.currencies).map(function ([key, value]) {
+            console.log(value);
             if (!value) {
                 errors.push('No value selected for ' + key);
             }
@@ -155,20 +151,10 @@ class Form extends Component {
         return errors;
     }
 
-    // function groupByVendor(data) {
-    //     //GROUP BY VENDOR
-    //     var group = data.reduce(function (r, a) {
-    //         // TO DO
-    //         r[a.customer] = (r[a.customer] || []), [a]);
-    //     return r;
-    // };
-    //         };
-
     handleSubmit(event) {
-        //var this2 = this;
-
         var errors = this.checkForm(this.state);
-
+        console.log(this.state);
+        var that = this;
         if (errors.length > 0) {
             alert("Errors: \n" + errors.join("\n"));
         } else {
@@ -178,11 +164,7 @@ class Form extends Component {
                 output_currency: this.state.output_currency,
                 filter_customer: this.state.filter_customer
             }).then(function (response) {
-                this2.setState({
-                    response: response.data
-                });
-
-                console.log(response.data);
+                that.setState({ response: response.data });
             }, function (error) {
                 alert(JSON.stringify(error.response.data.errors));
             });
@@ -192,7 +174,6 @@ class Form extends Component {
     }
 
     render() {
-
         return (
             <div className="mt-4">
                 <form onSubmit={this.handleSubmit}>
@@ -208,18 +189,18 @@ class Form extends Component {
                         />
                     </div>
 
-                    {OUTPUT_CURRENCIES.map(function (value) {
+                    {OUTPUT_CURRENCIES.map((item) => {
                         return <Input
-                            key={value}
+                            key={item}
                             type={"number"}
-                            title={value + ":"}
-                            name={value}
-                            value={this.state.currencies.key}
-                            handleChange={this.setCurrency(value)}
+                            title={item + ":"}
+                            name={item}
+                            handleChange={this.setCurrency(item)}
                             step={"0.001"}
                         />
-                    })
                     }
+                    )}
+
                     <Select
                         title={"Output Currency:"}
                         name={"output-currency"}
@@ -238,13 +219,11 @@ class Form extends Component {
                         />
                     }
 
-
                     <div className="form-group">
                         <input type="submit" className="btn btn-info" value="Submit" />
                     </div>
-
-
                 </form>
+
                 {Object.keys(this.state.response).length > 0 &&
                     <SumData
                         customers={this.state.response}

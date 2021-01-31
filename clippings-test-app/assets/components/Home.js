@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import NavBar from './NavBar';
 import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
+import Form from './Form';
 
 class Home extends Component {
     render() {
         return (
             <div>
                 <NavBar />
-                <Switch>
-                    <Route exact path="/" />
-                </Switch>
+                <Form />
             </div>
         )
     }
 }
+
+export default Home;

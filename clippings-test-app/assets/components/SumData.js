@@ -1,6 +1,4 @@
-
 import React from 'react';
-
 
 const SumData = (props) => {
     return (
@@ -16,7 +14,7 @@ const SumData = (props) => {
                     {Object.keys(props.customers).map(function (total) {
                         return <tr key={total}>
                             <td>{total}</td>
-                            <td><span style={color = props.customers[total] < 0 ? "red" : ""}> {props.customers[total]}</span></td>
+                            <td><span style={{ color: props.customers[total] < 0 ? "red" : "" }}> {props.customers[total]}</span></td>
                         </tr>
                     })
                     }

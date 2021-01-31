@@ -1,3 +1,12 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+index:
+  path: /
+  controller: App\Controller\HomeController::index
+
+api/form:
+  path: /api/csvform
+  controller: App\Controller\ApiController::submit_form
+  methods: POST
